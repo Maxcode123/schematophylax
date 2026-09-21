@@ -1,0 +1,32 @@
+{
+  "name": "schematophylax",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Maxcode123/schematophylax#readme",
+  "bugs": {
+    "url": "https://github.com/Maxcode123/schematophylax/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maxcode123/schematophylax.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "express": "^5.2.1",
+    "prisma": "^8.0.0-rc.15",
+    "typescript": "^7.0.2"
+  }
+}
