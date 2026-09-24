@@ -1,38 +1,26 @@
 import express from 'express';
-import { db } from '../../prisma/db.js';
-import { parseFields, parseUuid, requireFields } from './http.js';
-
-const fields = { userGroupId: 'uuid', migrationId: 'uuid', log: 'text' } as const;
+import { migrationLogsService } from '../../application/services/index.js';
+import { parseCreateMigrationLogRequest, parseUpdateMigrationLogRequest, toMigrationLogResponse } from '../dtos/migration_logs_dto.js';
 
 export const migrationLogsRouter: express.Router = express.Router();
 
 migrationLogsRouter.get('/', async (_req, res) => {
-  res.json(await db.orm.public.MigrationLog.all());
+  res.json((await migrationLogsService.list()).map(toMigrationLogResponse));
 });
 
 migrationLogsRouter.get('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.MigrationLog.first({ id }));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toMigrationLogResponse(await migrationLogsService.get(req.params.id)));
 });
 
 migrationLogsRouter.post('/', async (req, res) => {
-  const input = parseFields(req.body, fields);
-  requireFields(input, ['userGroupId', 'migrationId', 'log']);
-  res.status(201).json(await db.orm.public.MigrationLog.create(input));
+  res.status(201).json(toMigrationLogResponse(await migrationLogsService.create(parseCreateMigrationLogRequest(req.body))));
 });
 
 migrationLogsRouter.patch('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.MigrationLog.where({ id }).update(parseFields(req.body, fields)));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toMigrationLogResponse(await migrationLogsService.update(req.params.id, parseUpdateMigrationLogRequest(req.body))));
 });
 
 migrationLogsRouter.delete('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.MigrationLog.where({ id }).delete());
-  if (!row) return void res.sendStatus(404);
+  await migrationLogsService.delete(req.params.id);
   res.sendStatus(204);
 });

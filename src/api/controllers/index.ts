@@ -1,5 +1,6 @@
 import express from 'express';
-import { BadRequest, foreignKeyErrorStatus } from './http.js';
+import { NotFoundError, ReferenceNotFoundError, ReferencedRowConflictError } from '../../application/errors.js';
+import { BadRequest } from '../dtos/parse.js';
 import { migrationLogsRouter } from './migrationLogs.js';
 import { migrationsRouter } from './migrations.js';
 import { postgresConnectionsRouter } from './postgresConnections.js';
@@ -16,11 +17,12 @@ apiRouter.use('/migration-logs', migrationLogsRouter);
 
 apiRouter.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err instanceof BadRequest) return void res.status(400).json({ error: err.message });
-  const fkStatus = foreignKeyErrorStatus(err);
-  if (fkStatus) {
-    const { constraint } = err as { constraint?: string };
-    const error = fkStatus === 409 ? 'row is still referenced' : 'foreign key violation';
-    return void res.status(fkStatus).json({ error, constraint });
+  if (err instanceof NotFoundError) return void res.sendStatus(404);
+  if (err instanceof ReferenceNotFoundError) {
+    return void res.status(400).json({ error: 'foreign key violation', constraint: err.constraint });
+  }
+  if (err instanceof ReferencedRowConflictError) {
+    return void res.status(409).json({ error: 'row is still referenced', constraint: err.constraint });
   }
   next(err);
 });

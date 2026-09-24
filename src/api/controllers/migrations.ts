@@ -1,38 +1,26 @@
 import express from 'express';
-import { db } from '../../prisma/db.js';
-import { parseFields, parseUuid, requireFields } from './http.js';
-
-const fields = { userGroupId: 'uuid', postgresConnectionId: 'uuid', createByUserId: 'uuid', status: 'text' } as const;
+import { migrationsService } from '../../application/services/index.js';
+import { parseCreateMigrationRequest, parseUpdateMigrationRequest, toMigrationResponse } from '../dtos/migrations_dto.js';
 
 export const migrationsRouter: express.Router = express.Router();
 
 migrationsRouter.get('/', async (_req, res) => {
-  res.json(await db.orm.public.Migration.all());
+  res.json((await migrationsService.list()).map(toMigrationResponse));
 });
 
 migrationsRouter.get('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.Migration.first({ id }));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toMigrationResponse(await migrationsService.get(req.params.id)));
 });
 
 migrationsRouter.post('/', async (req, res) => {
-  const input = parseFields(req.body, fields);
-  requireFields(input, ['userGroupId', 'postgresConnectionId', 'createByUserId', 'status']);
-  res.status(201).json(await db.orm.public.Migration.create(input));
+  res.status(201).json(toMigrationResponse(await migrationsService.create(parseCreateMigrationRequest(req.body))));
 });
 
 migrationsRouter.patch('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.Migration.where({ id }).update(parseFields(req.body, fields)));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toMigrationResponse(await migrationsService.update(req.params.id, parseUpdateMigrationRequest(req.body))));
 });
 
 migrationsRouter.delete('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.Migration.where({ id }).delete());
-  if (!row) return void res.sendStatus(404);
+  await migrationsService.delete(req.params.id);
   res.sendStatus(204);
 });

@@ -1,38 +1,26 @@
 import express from 'express';
-import { db } from '../../prisma/db.js';
-import { parseFields, parseUuid, requireFields } from './http.js';
-
-const fields = { userGroupId: 'uuid', email: 'text', username: 'text' } as const;
+import { usersService } from '../../application/services/index.js';
+import { parseCreateUserRequest, parseUpdateUserRequest, toUserResponse } from '../dtos/users_dto.js';
 
 export const usersRouter: express.Router = express.Router();
 
 usersRouter.get('/', async (_req, res) => {
-  res.json(await db.orm.public.User.all());
+  res.json((await usersService.list()).map(toUserResponse));
 });
 
 usersRouter.get('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.User.first({ id }));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toUserResponse(await usersService.get(req.params.id)));
 });
 
 usersRouter.post('/', async (req, res) => {
-  const input = parseFields(req.body, fields);
-  requireFields(input, ['userGroupId', 'email']);
-  res.status(201).json(await db.orm.public.User.create(input));
+  res.status(201).json(toUserResponse(await usersService.create(parseCreateUserRequest(req.body))));
 });
 
 usersRouter.patch('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.User.where({ id }).update(parseFields(req.body, fields)));
-  if (!row) return void res.sendStatus(404);
-  res.json(row);
+  res.json(toUserResponse(await usersService.update(req.params.id, parseUpdateUserRequest(req.body))));
 });
 
 usersRouter.delete('/:id', async (req, res) => {
-  const id = parseUuid(req.params.id);
-  const row = id && (await db.orm.public.User.where({ id }).delete());
-  if (!row) return void res.sendStatus(404);
+  await usersService.delete(req.params.id);
   res.sendStatus(204);
 });
