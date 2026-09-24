@@ -1,6 +1,6 @@
 import express from 'express';
 import { migrationLogsService } from '../../application/services/index.js';
-import { parseCreateMigrationLogRequest, parseUpdateMigrationLogRequest, toMigrationLogResponse } from '../dtos/migration_logs_dto.js';
+import { parseCreateMigrationLogRequest, parseUpdateMigrationLogRequest, toMigrationLogResponse } from '../dtos/migration-logs-dto.js';
 
 export const migrationLogsRouter: express.Router = express.Router();
 

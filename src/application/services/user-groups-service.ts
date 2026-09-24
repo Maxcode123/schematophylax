@@ -1,7 +1,7 @@
-import type { UserGroup } from '../../domain/entities/user_group.js';
+import type { UserGroup } from '../../domain/entities/user-group.js';
 import type { db as Db } from '../../prisma/db.js';
 import { NotFoundError } from '../errors.js';
-import { withDbErrors } from './db_errors.js';
+import { withDbErrors } from './db-errors.js';
 import { rowId } from './ids.js';
 import { compact } from './patch.js';
 

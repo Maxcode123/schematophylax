@@ -1,4 +1,4 @@
-import type { CreateMigrationInput, UpdateMigrationInput } from '../../application/services/migrations_service.js';
+import type { CreateMigrationInput, UpdateMigrationInput } from '../../application/services/migrations-service.js';
 import type { Migration } from '../../domain/entities/migration.js';
 import { parseFields, requireFields } from './parse.js';
 

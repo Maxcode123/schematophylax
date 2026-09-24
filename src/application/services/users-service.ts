@@ -1,7 +1,7 @@
 import type { User } from '../../domain/entities/user.js';
 import type { db as Db } from '../../prisma/db.js';
 import { NotFoundError } from '../errors.js';
-import { withDbErrors } from './db_errors.js';
+import { withDbErrors } from './db-errors.js';
 import { refId, rowId } from './ids.js';
 import { compact, mapOptional } from './patch.js';
 

@@ -1,5 +1,5 @@
-import type { CreateMigrationLogInput, UpdateMigrationLogInput } from '../../application/services/migration_logs_service.js';
-import type { MigrationLog } from '../../domain/entities/migration_log.js';
+import type { CreateMigrationLogInput, UpdateMigrationLogInput } from '../../application/services/migration-logs-service.js';
+import type { MigrationLog } from '../../domain/entities/migration-log.js';
 import { parseFields, requireFields } from './parse.js';
 
 export type CreateMigrationLogRequest = {

@@ -1,5 +1,5 @@
-import type { CreateUserGroupInput, UpdateUserGroupInput } from '../../application/services/user_groups_service.js';
-import type { UserGroup } from '../../domain/entities/user_group.js';
+import type { CreateUserGroupInput, UpdateUserGroupInput } from '../../application/services/user-groups-service.js';
+import type { UserGroup } from '../../domain/entities/user-group.js';
 import { parseFields, requireFields } from './parse.js';
 
 export type CreateUserGroupRequest = {

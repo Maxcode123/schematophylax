@@ -1,8 +1,8 @@
 import type {
   CreatePostgresConnectionInput,
   UpdatePostgresConnectionInput,
-} from '../../application/services/postgres_connections_service.js';
-import type { PostgresConnection } from '../../domain/entities/postgres_connection.js';
+} from '../../application/services/postgres-connections-service.js';
+import type { PostgresConnection } from '../../domain/entities/postgres-connection.js';
 import { parseFields, requireFields } from './parse.js';
 
 export type CreatePostgresConnectionRequest = {

@@ -1,6 +1,6 @@
 import express from 'express';
 import { userGroupsService } from '../../application/services/index.js';
-import { parseCreateUserGroupRequest, parseUpdateUserGroupRequest, toUserGroupResponse } from '../dtos/user_groups_dto.js';
+import { parseCreateUserGroupRequest, parseUpdateUserGroupRequest, toUserGroupResponse } from '../dtos/user-groups-dto.js';
 
 export const userGroupsRouter: express.Router = express.Router();
 

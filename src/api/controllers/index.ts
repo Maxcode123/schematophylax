@@ -1,10 +1,10 @@
 import express from 'express';
 import { NotFoundError, ReferenceNotFoundError, ReferencedRowConflictError } from '../../application/errors.js';
 import { BadRequest } from '../dtos/parse.js';
-import { migrationLogsRouter } from './migrationLogs.js';
+import { migrationLogsRouter } from './migration-logs.js';
 import { migrationsRouter } from './migrations.js';
-import { postgresConnectionsRouter } from './postgresConnections.js';
-import { userGroupsRouter } from './userGroups.js';
+import { postgresConnectionsRouter } from './postgres-connections.js';
+import { userGroupsRouter } from './user-groups.js';
 import { usersRouter } from './users.js';
 
 export const apiRouter: express.Router = express.Router();

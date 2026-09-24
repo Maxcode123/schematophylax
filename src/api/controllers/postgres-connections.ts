@@ -1,6 +1,6 @@
 import express from 'express';
 import { postgresConnectionsService } from '../../application/services/index.js';
-import { parseCreatePostgresConnectionRequest, parseUpdatePostgresConnectionRequest, toPostgresConnectionResponse } from '../dtos/postgres_connections_dto.js';
+import { parseCreatePostgresConnectionRequest, parseUpdatePostgresConnectionRequest, toPostgresConnectionResponse } from '../dtos/postgres-connections-dto.js';
 
 export const postgresConnectionsRouter: express.Router = express.Router();
 

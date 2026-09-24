@@ -1,6 +1,6 @@
 import express from 'express';
 import { usersService } from '../../application/services/index.js';
-import { parseCreateUserRequest, parseUpdateUserRequest, toUserResponse } from '../dtos/users_dto.js';
+import { parseCreateUserRequest, parseUpdateUserRequest, toUserResponse } from '../dtos/users-dto.js';
 
 export const usersRouter: express.Router = express.Router();
 

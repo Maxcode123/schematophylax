@@ -1,6 +1,6 @@
 import express from 'express';
 import { migrationsService } from '../../application/services/index.js';
-import { parseCreateMigrationRequest, parseUpdateMigrationRequest, toMigrationResponse } from '../dtos/migrations_dto.js';
+import { parseCreateMigrationRequest, parseUpdateMigrationRequest, toMigrationResponse } from '../dtos/migrations-dto.js';
 
 export const migrationsRouter: express.Router = express.Router();
 

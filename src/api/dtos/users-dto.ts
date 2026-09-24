@@ -1,4 +1,4 @@
-import type { CreateUserInput, UpdateUserInput } from '../../application/services/users_service.js';
+import type { CreateUserInput, UpdateUserInput } from '../../application/services/users-service.js';
 import type { User } from '../../domain/entities/user.js';
 import { parseFields, requireFields } from './parse.js';
 

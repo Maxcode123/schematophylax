@@ -1,7 +1,7 @@
-import type { PostgresConnection } from '../../domain/entities/postgres_connection.js';
+import type { PostgresConnection } from '../../domain/entities/postgres-connection.js';
 import type { db as Db } from '../../prisma/db.js';
 import { NotFoundError } from '../errors.js';
-import { withDbErrors } from './db_errors.js';
+import { withDbErrors } from './db-errors.js';
 import { refId, rowId } from './ids.js';
 import { compact, mapOptional } from './patch.js';
 
