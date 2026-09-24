@@ -18,7 +18,7 @@ type UserGroupRow = {
   updatedAt: string;
 };
 
-function toEntity(row: UserGroupRow): UserGroup {
+export function toUserGroupEntity(row: UserGroupRow): UserGroup {
   return {
     id: row.id,
     name: row.name,
@@ -32,18 +32,18 @@ export class UserGroupsService {
 
   async list(): Promise<UserGroup[]> {
     const rows = await withDbErrors(() => this.db.orm.public.UserGroup.all());
-    return rows.map(toEntity);
+    return rows.map(toUserGroupEntity);
   }
 
   async get(id: string): Promise<UserGroup> {
     const row = await withDbErrors(() => this.db.orm.public.UserGroup.first({ id: rowId(id) }));
     if (!row) throw new NotFoundError();
-    return toEntity(row);
+    return toUserGroupEntity(row);
   }
 
   async create(input: CreateUserGroupInput): Promise<UserGroup> {
     const row = await withDbErrors(() => this.db.orm.public.UserGroup.create({ name: input.name }));
-    return toEntity(row);
+    return toUserGroupEntity(row);
   }
 
   async update(id: string, patch: UpdateUserGroupInput): Promise<UserGroup> {
@@ -51,7 +51,7 @@ export class UserGroupsService {
       this.db.orm.public.UserGroup.where({ id: rowId(id) }).update(compact({ name: patch.name })),
     );
     if (!row) throw new NotFoundError();
-    return toEntity(row);
+    return toUserGroupEntity(row);
   }
 
   async delete(id: string): Promise<void> {

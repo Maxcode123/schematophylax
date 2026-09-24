@@ -1,9 +1,15 @@
 import express from 'express';
-import { NotFoundError, ReferenceNotFoundError, ReferencedRowConflictError } from '../../application/errors.js';
+import {
+  NotFoundError,
+  ReferenceNotFoundError,
+  ReferencedRowConflictError,
+  UniqueConstraintError,
+} from '../../application/errors.js';
 import { BadRequest } from '../dtos/parse.js';
 import { migrationLogsRouter } from './migration-logs.js';
 import { migrationsRouter } from './migrations.js';
 import { postgresConnectionsRouter } from './postgres-connections.js';
+import { signupRouter } from './signup.js';
 import { userGroupsRouter } from './user-groups.js';
 import { usersRouter } from './users.js';
 
@@ -14,6 +20,7 @@ apiRouter.use('/users', usersRouter);
 apiRouter.use('/postgres-connections', postgresConnectionsRouter);
 apiRouter.use('/migrations', migrationsRouter);
 apiRouter.use('/migration-logs', migrationLogsRouter);
+apiRouter.use('/signup', signupRouter);
 
 apiRouter.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err instanceof BadRequest) return void res.status(400).json({ error: err.message });
@@ -23,6 +30,9 @@ apiRouter.use((err: unknown, _req: express.Request, res: express.Response, next:
   }
   if (err instanceof ReferencedRowConflictError) {
     return void res.status(409).json({ error: 'row is still referenced', constraint: err.constraint });
+  }
+  if (err instanceof UniqueConstraintError) {
+    return void res.status(409).json({ error: 'already exists', constraint: err.constraint });
   }
   next(err);
 });

@@ -1,8 +1,8 @@
-import { ReferenceNotFoundError, ReferencedRowConflictError } from '../errors.js';
+import { ReferenceNotFoundError, ReferencedRowConflictError, UniqueConstraintError } from '../errors.js';
 
 /**
- * Translates the ORM's `SqlQueryError` for a Postgres foreign-key violation into an
- * application error; other errors pass through unchanged. The class is not exported by
+ * Translates the ORM's `SqlQueryError` for a Postgres foreign-key or unique violation
+ * into an application error; other errors pass through unchanged. The class is not exported by
  * the façade, so match on its documented `kind`/`sqlState`/`constraint` fields.
  */
 function translateDbError(err: unknown): unknown {
@@ -12,6 +12,7 @@ function translateDbError(err: unknown): unknown {
   const name = typeof constraint === 'string' ? constraint : undefined;
   if (sqlState === '23503') return new ReferenceNotFoundError(name);
   if (sqlState === '23001') return new ReferencedRowConflictError(name);
+  if (sqlState === '23505') return new UniqueConstraintError(name);
   return err;
 }
 

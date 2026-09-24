@@ -40,11 +40,12 @@ function crudPaths(
   path: string,
   tag: string,
   name: string,
-  { restrictedDelete = false }: { restrictedDelete?: boolean } = {},
+  { restrictedDelete = false, uniqueFields = false }: { restrictedDelete?: boolean; uniqueFields?: boolean } = {},
 ): OpenAPIV3_1.PathsObject {
   // Untyped literal: openapi-types' 3.1 ParameterObject reuses 3.0 schema types.
   const idParam = { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } } as const;
   const invalid = errorResponse('Invalid body, or a referenced row does not exist');
+  const duplicate = uniqueFields && { '409': errorResponse('A unique value is already taken') };
   return {
     [`/${path}`]: {
       get: {
@@ -58,7 +59,11 @@ function crudPaths(
         operationId: `create${name}`,
         summary: `Create a ${name}`,
         requestBody: { required: true, content: json(ref(`Create${name}Request`)) },
-        responses: { '201': { description: 'Created', content: json(ref(`${name}Response`)) }, '400': invalid },
+        responses: {
+          '201': { description: 'Created', content: json(ref(`${name}Response`)) },
+          '400': invalid,
+          ...duplicate,
+        },
       },
     },
     [`/${path}/{id}`]: {
@@ -78,6 +83,7 @@ function crudPaths(
           '200': { description: 'OK', content: json(ref(`${name}Response`)) },
           '400': invalid,
           '404': notFound,
+          ...duplicate,
         },
       },
       delete: {
@@ -104,13 +110,27 @@ export const openApiDocument: OpenAPIV3_1.Document = {
     { name: 'Postgres connections' },
     { name: 'Migrations' },
     { name: 'Migration logs' },
+    { name: 'Sign-up' },
   ],
   paths: {
     ...crudPaths('user-groups', 'User groups', 'UserGroup'),
-    ...crudPaths('users', 'Users', 'User', { restrictedDelete: true }),
+    ...crudPaths('users', 'Users', 'User', { restrictedDelete: true, uniqueFields: true }),
     ...crudPaths('postgres-connections', 'Postgres connections', 'PostgresConnection', { restrictedDelete: true }),
     ...crudPaths('migrations', 'Migrations', 'Migration'),
     ...crudPaths('migration-logs', 'Migration logs', 'MigrationLog'),
+    '/signup': {
+      post: {
+        tags: ['Sign-up'],
+        operationId: 'signup',
+        summary: 'Create a new user group with its first user',
+        requestBody: { required: true, content: json(ref('SignupRequest')) },
+        responses: {
+          '201': { description: 'Created', content: json(ref('SignupResponse')) },
+          '400': errorResponse('Invalid body'),
+          '409': errorResponse('The email is already registered'),
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -118,7 +138,7 @@ export const openApiDocument: OpenAPIV3_1.Document = {
         type: 'object',
         properties: {
           error: text,
-          constraint: { type: 'string', description: 'Foreign key constraint that was violated' },
+          constraint: { type: 'string', description: 'Foreign key or unique constraint that was violated' },
         },
         required: ['error'],
       },
@@ -147,6 +167,17 @@ export const openApiDocument: OpenAPIV3_1.Document = {
         ['userGroupId', 'migrationId', 'log'],
         { userGroupId: uuid, migrationId: uuid, log: text },
       ),
+      SignupRequest: {
+        type: 'object',
+        properties: { groupName: text, email: text, username: text },
+        required: ['groupName', 'email'],
+        additionalProperties: false,
+      },
+      SignupResponse: {
+        type: 'object',
+        properties: { userGroup: ref('UserGroupResponse'), user: ref('UserResponse') },
+        required: ['userGroup', 'user'],
+      },
     },
   },
 };

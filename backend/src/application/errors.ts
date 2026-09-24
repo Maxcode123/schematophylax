@@ -14,3 +14,10 @@ export class ReferencedRowConflictError extends Error {
     super('row is still referenced');
   }
 }
+
+/** A value that must be unique, such as a user's email, is already taken. */
+export class UniqueConstraintError extends Error {
+  constructor(readonly constraint: string | undefined) {
+    super('value already exists');
+  }
+}
