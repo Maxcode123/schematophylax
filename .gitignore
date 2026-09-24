@@ -143,3 +143,10 @@ vite.config.ts.timestamp-*
 .vite/
 dist/
 *.swp
+
+# Agent skills that `prisma skills sync` (backend postinstall) copies into backend/;
+# the committed copies live at the repo root.
+backend/.agents/
+backend/.claude/
+backend/.cursor/
+backend/.devin/
