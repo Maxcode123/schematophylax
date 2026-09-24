@@ -93,7 +93,56 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "createdBy": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "createByUserId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "postgresConnection": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "postgresConnectionId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "PostgresConnection",
+                  "namespace": "public"
+                }
+              },
+              "userGroup": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userGroupId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "UserGroup",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "createByUserId": {
@@ -176,7 +225,40 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "migration": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "migrationId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Migration",
+                  "namespace": "public"
+                }
+              },
+              "userGroup": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userGroupId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "UserGroup",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "createdAt": {
@@ -347,7 +429,24 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "userGroup": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userGroupId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "UserGroup",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "createdAt": {
@@ -415,7 +514,7 @@
                     "id"
                   ],
                   "targetFields": [
-                    "id"
+                    "userGroupId"
                   ]
                 },
                 "to": {
@@ -506,8 +605,85 @@
                   }
                 }
               },
-              "foreignKeys": [],
-              "indexes": [],
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userGroupId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Migration"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "UserGroup"
+                  }
+                },
+                {
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "postgresConnectionId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Migration"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "PostgresConnection"
+                  }
+                },
+                {
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "createByUserId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Migration"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "createByUserId"
+                  ],
+                  "name": "Migration_createByUserId_idx_8088771c",
+                  "prefix": "Migration_createByUserId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "postgresConnectionId"
+                  ],
+                  "name": "Migration_postgresConnectionId_idx_7cf3a2d5",
+                  "prefix": "Migration_postgresConnectionId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "userGroupId"
+                  ],
+                  "name": "Migration_userGroupId_idx_716dac96",
+                  "prefix": "Migration_userGroupId_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -561,8 +737,60 @@
                   }
                 }
               },
-              "foreignKeys": [],
-              "indexes": [],
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userGroupId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "MigrationLog"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "UserGroup"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "migrationId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "MigrationLog"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Migration"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "migrationId"
+                  ],
+                  "name": "MigrationLog_migrationId_idx_e76b2003",
+                  "prefix": "MigrationLog_migrationId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "userGroupId"
+                  ],
+                  "name": "MigrationLog_userGroupId_idx_716dac96",
+                  "prefix": "MigrationLog_userGroupId_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -613,8 +841,35 @@
                   }
                 }
               },
-              "foreignKeys": [],
-              "indexes": [],
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userGroupId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "PostgresConnection"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "UserGroup"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "userGroupId"
+                  ],
+                  "name": "PostgresConnection_userGroupId_idx_716dac96",
+                  "prefix": "PostgresConnection_userGroupId_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -665,8 +920,35 @@
                   "nullable": true
                 }
               },
-              "foreignKeys": [],
-              "indexes": [],
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userGroupId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "UserGroup"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "userGroupId"
+                  ],
+                  "name": "User_userGroupId_idx_716dac96",
+                  "prefix": "User_userGroupId_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -725,7 +1007,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "d44739b9e4d498f34743defaacc47d1dd87c13e60855ff0430179290f3952a6b"
+    "storageHash": "7b15cb89e685f6b5d8e3f79fdf8ae1d91c5b3b1051f90e9db4460d9d7b6db098"
   },
   "execution": {
     "executionHash": "e12529424ca0f024ade3dfe2a9925588787c29018017c1f7a8b76437c6796f44",

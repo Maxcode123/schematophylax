@@ -17,6 +17,26 @@ type Fields<S extends Record<string, FieldKind>> = {
 export class BadRequest extends Error {}
 
 /**
+ * HTTP status per foreign-key SQLSTATE: a missing referenced row is the client's bad
+ * input (400); a delete blocked by `ON DELETE RESTRICT` conflicts with existing rows (409).
+ */
+const FOREIGN_KEY_STATUS: Readonly<Record<string, 400 | 409>> = {
+  '23503': 400,
+  '23001': 409,
+};
+
+/**
+ * Maps the ORM's `SqlQueryError` for a Postgres foreign-key violation to an HTTP status,
+ * or returns `undefined` for any other error. The class is not exported by the façade,
+ * so match on its documented `kind`/`sqlState` fields.
+ */
+export function foreignKeyErrorStatus(err: unknown): 400 | 409 | undefined {
+  if (typeof err !== 'object' || err === null) return undefined;
+  const { kind, sqlState } = err as { kind?: unknown; sqlState?: unknown };
+  return kind === 'sql_query' && typeof sqlState === 'string' ? FOREIGN_KEY_STATUS[sqlState] : undefined;
+}
+
+/**
  * Picks the writable fields in `spec` from an untrusted request body.
  * Absent keys are skipped; present keys of the wrong type throw `BadRequest`.
  */

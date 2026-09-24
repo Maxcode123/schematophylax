@@ -58,14 +58,30 @@ export const contract = defineContract({}, ({ field, model, rel }) => {
   return {
     models: {
       UserGroup: UserGroup.relations({
-        users: rel.hasMany(User, { by: 'id' }),
+        users: rel.hasMany(User, { by: 'userGroupId' }),
       }),
-      User,
+      User: User.relations({
+        userGroup: rel.belongsTo(UserGroup, { from: 'userGroupId', to: 'id' })
+          .sql({ fk: { onDelete: 'cascade' } }),
+      }),
       PostgresConnection: PostgresConnection.relations({
-        userGroup: rel.belongsTo(UserGroup, { from: 'userGroupId', to: 'id' }),
+        userGroup: rel.belongsTo(UserGroup, { from: 'userGroupId', to: 'id' })
+          .sql({ fk: { onDelete: 'cascade' } }),
       }),
-      Migration,
-      MigrationLog,
+      Migration: Migration.relations({
+        userGroup: rel.belongsTo(UserGroup, { from: 'userGroupId', to: 'id' })
+          .sql({ fk: { onDelete: 'cascade' } }),
+        postgresConnection: rel.belongsTo(PostgresConnection, { from: 'postgresConnectionId', to: 'id' })
+          .sql({ fk: { onDelete: 'restrict' } }),
+        createdBy: rel.belongsTo(User, { from: 'createByUserId', to: 'id' })
+          .sql({ fk: { onDelete: 'restrict' } }),
+      }),
+      MigrationLog: MigrationLog.relations({
+        userGroup: rel.belongsTo(UserGroup, { from: 'userGroupId', to: 'id' })
+          .sql({ fk: { onDelete: 'cascade' } }),
+        migration: rel.belongsTo(Migration, { from: 'migrationId', to: 'id' })
+          .sql({ fk: { onDelete: 'cascade' } }),
+      }),
     },
   };
 });
