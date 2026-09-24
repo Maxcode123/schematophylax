@@ -6,9 +6,11 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "preserve",
     "target": "esnext",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
 
     // Other Outputs
     "sourceMap": true,
@@ -35,5 +37,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
   }
 }
