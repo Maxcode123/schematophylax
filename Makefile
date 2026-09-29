@@ -10,7 +10,7 @@ SERVICE ?= backend
 
 .DEFAULT_GOAL := help
 .PHONY: help install build typecheck clean start \
-	frontend-install frontend-dev frontend-build \
+	frontend-install frontend-dev frontend-build frontend-test \
 	contract-emit db-init db-plan db-update db-shell \
 	up down stop-backend docker-build ps logs lint-openapi
 
@@ -49,6 +49,9 @@ frontend-dev: ## Run the Vite dev server (proxies /api to localhost:8000)
 
 frontend-build: ## Type-check and build the frontend
 	$(FRONTEND) npm run build
+
+frontend-test: ## Run the frontend tests
+	$(FRONTEND) npm test
 
 ## --- Prisma ------------------------------------------------------------------
 
